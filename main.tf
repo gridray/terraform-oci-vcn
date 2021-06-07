@@ -8,14 +8,14 @@ locals {
 # VCN
 resource "oci_core_vcn" "vcn" {
   count          = module.this.enabled ? 1 : 0
+
   compartment_id = var.compartment_id
+  display_name   = module.this.name
+  freeform_tags  = module.this.tags
 
   cidr_block     = ""
   cidr_blocks    = var.cidr_blocks
-  display_name   = module.this.name
   dns_label      = module.this.name
-  defined_tags   = var.defined_tags
-  freeform_tags  = module.this.tags
   is_ipv6enabled = var.ipv6_enabled
 }
 
@@ -94,7 +94,6 @@ resource "oci_core_internet_gateway" "ig" {
 
   display_name = "${module.this.name}-internet-gateway"
 
-  defined_tags  = var.defined_tags
   freeform_tags = module.this.tags
 
   vcn_id = oci_core_vcn.vcn[0].id
@@ -107,8 +106,7 @@ resource "oci_core_route_table" "ig" {
 
   display_name = "${module.this.name}-internet-gateway"
 
-  defined_tags  = var.defined_tags
-  freeform_tags = var.tags
+  freeform_tags = module.this.tags
 
   dynamic "route_rules" {
     # default routes to internet
@@ -185,8 +183,7 @@ resource "oci_core_service_gateway" "service_gateway" {
 
   display_name = "${module.this.name}-service-gateway"
 
-  defined_tags  = var.defined_tags
-  freeform_tags = var.tags
+  freeform_tags = module.this.tags
 
   dynamic "services" {
     for_each = data.oci_core_services.all_oci_services[0].services
@@ -206,8 +203,7 @@ resource "oci_core_nat_gateway" "nat_gateway" {
 
   display_name = "${module.this.name}-nat-gateway"
 
-  defined_tags  = var.defined_tags
-  freeform_tags = var.tags
+  freeform_tags = module.this.tags
 
   vcn_id = oci_core_vcn.vcn[0].id
 }
@@ -219,8 +215,7 @@ resource "oci_core_route_table" "nat" {
 
   display_name = "${module.this.name}-nat-gateway"
 
-  defined_tags  = var.defined_tags
-  freeform_tags = var.tags
+  freeform_tags = module.this.tags
 
   dynamic "route_rules" {
     for_each = local.all_anywhere
@@ -297,8 +292,7 @@ resource "oci_core_drg" "drg" {
   compartment_id = var.compartment_id
   display_name   = "${module.this.name}-drg"
 
-  defined_tags  = var.defined_tags
-  freeform_tags = var.tags
+  freeform_tags = module.this.tags
 }
 
 resource "oci_core_drg_attachment" "drg" {

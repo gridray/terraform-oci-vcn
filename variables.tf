@@ -14,12 +14,6 @@ variable "cidr_blocks" {
   description = "list of cidr blocks to be provisioned in vcn"
 }
 
-variable "defined_tags" {
-  type        = map(string)
-  description = "defined tags"
-  default = null
-}
-
 variable "drg_enabled" {
   type        = bool
   description = "should Dynamic Route Gateway be enabled in VCN"
